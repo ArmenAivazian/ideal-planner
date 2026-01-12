@@ -20,33 +20,44 @@ export const TaskForm: React.FC<TaskFormProps> = ({
   const [title, setTitle] = useState('');
   const [scheduledDate, setScheduledDate] = useState<string>('');
   const [deadlineDate, setDeadlineDate] = useState<string>('');
-  const [reminderEnabled, setReminderEnabled] = useState(false);
   const [notes, setNotes] = useState('');
 
   useEffect(() => {
     if (task) {
-      setTitle(task.title);
-      setScheduledDate(
-        task.scheduled_date
-          ? format(task.scheduled_date, 'yyyy-MM-dd')
-          : ''
-      );
-      setDeadlineDate(
-        task.deadline_date
+      const nextScheduledDate = task.scheduled_date
+        ? format(task.scheduled_date, 'yyyy-MM-dd')
+        : '';
+      const nextDeadlineDate =
+        nextScheduledDate === '' && task.deadline_date
           ? format(task.deadline_date, 'yyyy-MM-dd')
-          : ''
-      );
-      setReminderEnabled(task.reminder_enabled);
+          : '';
+
+      setTitle(task.title);
+      setScheduledDate(nextScheduledDate);
+      setDeadlineDate(nextDeadlineDate);
       setNotes(task.notes || '');
     } else {
       // Нова задача
       setTitle('');
       setScheduledDate('');
       setDeadlineDate('');
-      setReminderEnabled(false);
       setNotes('');
     }
   }, [task]);
+
+  const handleScheduledDateChange = (value: string) => {
+    setScheduledDate(value);
+    if (value && deadlineDate) {
+      setDeadlineDate('');
+    }
+  };
+
+  const handleDeadlineDateChange = (value: string) => {
+    setDeadlineDate(value);
+    if (value && scheduledDate) {
+      setScheduledDate('');
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,12 +71,19 @@ export const TaskForm: React.FC<TaskFormProps> = ({
       return new Date(year, month - 1, day);
     };
 
+    const normalizedScheduledDate = scheduledDate;
+    const normalizedDeadlineDate = scheduledDate ? '' : deadlineDate;
+
     const taskData: Partial<Task> = {
       title: title.trim(),
-      scheduled_date: scheduledDate ? createLocalDate(scheduledDate) : null,
+      scheduled_date: normalizedScheduledDate
+        ? createLocalDate(normalizedScheduledDate)
+        : null,
       scheduled_time: null,
-      deadline_date: deadlineDate ? createLocalDate(deadlineDate) : null,
-      reminder_enabled: reminderEnabled && !!scheduledDate,
+      deadline_date: normalizedDeadlineDate
+        ? createLocalDate(normalizedDeadlineDate)
+        : null,
+      reminder_enabled: false,
       notes: notes.trim() || null,
     };
 
@@ -84,31 +102,25 @@ export const TaskForm: React.FC<TaskFormProps> = ({
         required
       />
 
-      <Input
-        label="Дата виконання"
-        type="date"
-        value={scheduledDate}
-        onChange={(e) => setScheduledDate(e.target.value)}
-      />
-
-      {scheduledDate && (
-        <div className="task-form__checkbox-wrapper">
-          <input
-            type="checkbox"
-            id="reminder"
-            checked={reminderEnabled}
-            onChange={(e) => setReminderEnabled(e.target.checked)}
+      <div className="task-form__date-group">
+        <div className="task-form__date-row">
+          <Input
+            label="Дата виконання"
+            type="date"
+            value={scheduledDate}
+            onChange={(e) => handleScheduledDateChange(e.target.value)}
+            disabled={!!deadlineDate}
           />
-          <label htmlFor="reminder">Нагадування</label>
+          <div className="task-form__date-divider">або</div>
+          <Input
+            label="Дедлайн (до дати)"
+            type="date"
+            value={deadlineDate}
+            onChange={(e) => handleDeadlineDateChange(e.target.value)}
+            disabled={!!scheduledDate}
+          />
         </div>
-      )}
-
-      <Input
-        label="Дедлайн (до дати)"
-        type="date"
-        value={deadlineDate}
-        onChange={(e) => setDeadlineDate(e.target.value)}
-      />
+      </div>
 
       <Textarea
         label="Нотатки (опційно)"
@@ -118,7 +130,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({
       />
 
       <div className="task-form__actions">
-        <Button type="button" onClick={onCancel}>
+        <Button type="button" onClick={onCancel} className="task-form__cancel">
           Скасувати
         </Button>
         <Button type="submit" variant="primary">

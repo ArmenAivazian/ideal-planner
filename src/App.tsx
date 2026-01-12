@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { TodayPage } from './pages/TodayPage';
 import { Calendar } from './components/Calendar';
-import { addDays, format } from 'date-fns';
+import { Button } from './components/Button';
+import { addDays } from 'date-fns';
 import './App.css';
 
 type View = 'today' | 'calendar';
@@ -29,13 +30,21 @@ export const App: React.FC = () => {
   return (
     <div className="app">
       <nav className="app__nav">
-        <button
-          className="app__nav-today"
-          onClick={handleGoToday}
-        >
-          Сьогодні
-        </button>
-        <div className="app__nav-date">
+        <div className="app__nav-left">
+          <button
+            className={`app__nav-item ${view === 'today' ? 'app__nav-item--active' : ''}`}
+            onClick={() => setView('today')}
+          >
+            День
+          </button>
+          <button
+            className={`app__nav-item ${view === 'calendar' ? 'app__nav-item--active' : ''}`}
+            onClick={() => setView('calendar')}
+          >
+            Календар
+          </button>
+        </div>
+        <div className="app__nav-right">
           <button
             className="app__nav-arrow"
             onClick={() => handleShiftDay(-1)}
@@ -44,12 +53,13 @@ export const App: React.FC = () => {
           >
             ‹
           </button>
-          <button
-            className={`app__nav-item ${view === 'today' ? 'app__nav-item--active' : ''}`}
-            onClick={() => setView('today')}
+          <Button
+            variant="primary"
+            className="app__nav-today"
+            onClick={handleGoToday}
           >
-            {format(selectedDate, 'd MMMM yyyy')}
-          </button>
+            Сьогодні
+          </Button>
           <button
             className="app__nav-arrow"
             onClick={() => handleShiftDay(1)}
@@ -59,12 +69,6 @@ export const App: React.FC = () => {
             ›
           </button>
         </div>
-        <button
-          className={`app__nav-item ${view === 'calendar' ? 'app__nav-item--active' : ''}`}
-          onClick={() => setView('calendar')}
-        >
-          Календар
-        </button>
       </nav>
 
       <main className="app__main">

@@ -5,6 +5,7 @@ import { TaskSection } from '../components/TaskSection';
 import { TaskForm } from '../components/TaskForm';
 import { Button } from '../components/Button';
 import { format } from 'date-fns';
+import { uk } from 'date-fns/locale';
 import './TodayPage.css';
 
 interface TodayPageProps {
@@ -114,12 +115,15 @@ export const TodayPage: React.FC<TodayPageProps> = ({
   };
 
   const isToday = format(selectedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
+  const displayDate = isToday
+    ? 'Сьогодні'
+    : format(selectedDate, 'd MMMM yyyy', { locale: uk });
 
   return (
     <div className="today-page">
       <div className="today-page__header">
         <div>
-          <h1>{isToday ? 'Сьогодні' : format(selectedDate, 'd MMMM yyyy')}</h1>
+          <h1>{displayDate}</h1>
         </div>
         <div className="today-page__controls">
           <label className="today-page__toggle">
@@ -131,56 +135,60 @@ export const TodayPage: React.FC<TodayPageProps> = ({
             <span>Показувати виконані</span>
           </label>
           {!showForm && (
-            <Button variant="primary" onClick={handleNewTask}>
-              + Нова задача
+            <Button
+              variant="primary"
+              onClick={handleNewTask}
+              className="today-page__new-task"
+            >
+              Нова задача
             </Button>
           )}
         </div>
       </div>
 
-      {showForm && (
-        <div className="today-page__form">
+      <div className={`today-page__body ${showForm ? 'today-page__body--with-form' : ''}`}>
+        <div className={`today-page__form ${showForm ? '' : 'today-page__form--hidden'}`}>
           <TaskForm
             task={editingTask}
             onSave={handleSave}
             onCancel={handleCancel}
           />
         </div>
-      )}
 
-      <div className="today-page__content">
-        <TaskSection
-          title="Протерміновані"
-          tasks={tasks.overdue}
-          onToggle={handleToggle}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          isOverdue={true}
-        />
+        <div className="today-page__content">
+          <TaskSection
+            title="Протерміновані"
+            tasks={tasks.overdue}
+            onToggle={handleToggle}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            isOverdue={true}
+          />
 
-        <TaskSection
-          title="Задачі на цей день"
-          tasks={tasks.scheduled}
-          onToggle={handleToggle}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+          <TaskSection
+            title="Задачі на цей день"
+            tasks={tasks.scheduled}
+            onToggle={handleToggle}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
 
-        <TaskSection
-          title="Задачі з дедлайном"
-          tasks={tasks.deadlines}
-          onToggle={handleToggle}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+          <TaskSection
+            title="Задачі з дедлайном"
+            tasks={tasks.deadlines}
+            onToggle={handleToggle}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
 
-        <TaskSection
-          title="Всі інші задачі"
-          tasks={tasks.backlog}
-          onToggle={handleToggle}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+          <TaskSection
+            title="Всі інші задачі"
+            tasks={tasks.backlog}
+            onToggle={handleToggle}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
       </div>
     </div>
   );

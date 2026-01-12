@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 // Модель задачі згідно з вимогами
 export interface Task {
   id: string;
@@ -26,6 +28,13 @@ export interface TaskDB {
   notes: string | null;
 }
 
+const toLocalDateString = (date: Date): string => format(date, 'yyyy-MM-dd');
+
+const fromLocalDateString = (dateStr: string): Date => {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
 // Конвертація між форматами
 export function taskToDB(task: Task): TaskDB {
   return {
@@ -33,10 +42,10 @@ export function taskToDB(task: Task): TaskDB {
     created_at: task.created_at.toISOString(),
     updated_at: task.updated_at.toISOString(),
     scheduled_date: task.scheduled_date
-      ? task.scheduled_date.toISOString().split('T')[0]
+      ? toLocalDateString(task.scheduled_date)
       : null,
     deadline_date: task.deadline_date
-      ? task.deadline_date.toISOString().split('T')[0]
+      ? toLocalDateString(task.deadline_date)
       : null,
   };
 }
@@ -47,10 +56,10 @@ export function taskFromDB(taskDB: TaskDB): Task {
     created_at: new Date(taskDB.created_at),
     updated_at: new Date(taskDB.updated_at),
     scheduled_date: taskDB.scheduled_date
-      ? new Date(taskDB.scheduled_date)
+      ? fromLocalDateString(taskDB.scheduled_date)
       : null,
     deadline_date: taskDB.deadline_date
-      ? new Date(taskDB.deadline_date)
+      ? fromLocalDateString(taskDB.deadline_date)
       : null,
   };
 }

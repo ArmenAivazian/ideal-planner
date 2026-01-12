@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, startOfWeek, endOfWeek } from 'date-fns';
+import { uk } from 'date-fns/locale';
 import { taskRepository } from '../db/taskRepository';
 import './Calendar.css';
 
@@ -74,7 +75,7 @@ export const Calendar: React.FC<CalendarProps> = ({
       <div className="calendar__header">
         <button onClick={handlePrevMonth} className="calendar__nav">‹</button>
         <h2 className="calendar__month">
-          {format(currentMonth, 'MMMM yyyy')}
+          {format(currentMonth, 'MMMM yyyy', { locale: uk })}
         </h2>
         <button onClick={handleNextMonth} className="calendar__nav">›</button>
       </div>

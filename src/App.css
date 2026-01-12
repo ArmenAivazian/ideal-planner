@@ -6,16 +6,31 @@
 
 .app__nav {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
   border-bottom: 1px solid #e0e0e0;
-  padding: 12px 24px;
+  padding: 12px 24px 0;
   background-color: #ffffff;
   flex-wrap: wrap;
 }
 
+.app__nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.app__nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+}
+
 .app__nav-item {
-  padding: 10px 16px;
+  padding: 10px 16px 12px;
   font-size: 14px;
   border: none;
   background: none;
@@ -32,32 +47,20 @@
 .app__nav-item--active {
   border-bottom-color: #000000;
   font-weight: 500;
+  margin-bottom: -1px;
 }
 
 .app__nav-today {
-  padding: 8px 14px;
-  font-size: 13px;
-  border: 1px solid #000000;
-  background-color: #ffffff;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: opacity 0.2s, background-color 0.2s;
-}
-
-.app__nav-today:hover {
-  opacity: 0.8;
-  background-color: #f5f5f5;
-}
-
-.app__nav-date {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  padding: 8px 16px;
 }
 
 .app__nav-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 32px;
   height: 32px;
+  padding: 0;
   border: none;
   background: none;
   cursor: pointer;

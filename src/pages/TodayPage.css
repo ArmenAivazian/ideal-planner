@@ -1,19 +1,20 @@
 .today-page {
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
   padding: 32px 24px;
 }
 
 .today-page__header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 32px;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 0 24px;
   flex-wrap: wrap;
   gap: 16px;
+  width: 100%;
 }
 
 .today-page__header h1 {
+  font-size: calc(var(--font-size-xl) * 1.5);
   margin-bottom: 8px;
 }
 
@@ -29,6 +30,8 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  margin-left: auto;
+  justify-content: flex-end;
 }
 
 .today-page__toggle {
@@ -40,12 +43,48 @@
 }
 
 .today-page__form {
-  margin-bottom: 32px;
+  margin-bottom: 0;
   padding: 24px;
   background-color: #f5f5f5;
   border-radius: 8px;
 }
 
-.today-page__content {
-  /* контент з задачами */
+.today-page__form--hidden {
+  display: none;
+}
+
+.today-page__body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.today-page__body--with-form {
+  grid-template-areas:
+    'form'
+    'list';
+}
+
+@media (min-width: 900px) {
+  .today-page__body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 40%);
+    grid-template-areas: 'list form';
+    align-items: start;
+  }
+
+  .today-page__form {
+    grid-area: form;
+  }
+
+  .today-page__content {
+    grid-area: list;
+  }
+
+  .today-page__form--hidden {
+    display: block;
+  }
+
+  .today-page__new-task {
+    display: none;
+  }
 }

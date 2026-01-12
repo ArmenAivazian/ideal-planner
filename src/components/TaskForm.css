@@ -8,16 +8,27 @@
   gap: 16px;
 }
 
-.task-form__checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.task-form__date-group {
   margin-bottom: 16px;
 }
 
-.task-form__checkbox-wrapper label {
-  font-size: 15px;
-  cursor: pointer;
+.task-form__date-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.task-form__date-row .input-wrapper {
+  margin-bottom: 0;
+}
+
+.task-form__date-divider {
+  font-size: 12px;
+  color: #666666;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-top: 16px;
 }
 
 .task-form__actions {
@@ -25,4 +36,10 @@
   gap: 12px;
   justify-content: flex-end;
   margin-top: 24px;
+}
+
+@media (min-width: 900px) {
+  .task-form__cancel {
+    display: none;
+  }
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Task } from '../types/task';
 import { format } from 'date-fns';
+import { uk } from 'date-fns/locale';
 import './TaskItem.css';
 
 interface TaskItemProps {
@@ -101,7 +102,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                   isOverdue ? 'task-item__deadline--overdue' : ''
                 }`}
               >
-                Дедлайн: {format(task.deadline_date, 'd MMM')}
+                Дедлайн: {format(task.deadline_date, 'd MMM', { locale: uk })}
                 {isOverdue && ' (прострочено)'}
               </span>
             </div>
