@@ -32,6 +32,8 @@ jobs:
           BASE_PATH: "/${{ github.event.repository.name }}/"
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
