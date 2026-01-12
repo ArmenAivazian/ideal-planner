@@ -88,6 +88,13 @@ export const TaskForm: React.FC<TaskFormProps> = ({
     };
 
     onSave(taskData);
+
+    if (!task) {
+      setTitle('');
+      setScheduledDate('');
+      setDeadlineDate('');
+      setNotes('');
+    }
   };
 
   return (
