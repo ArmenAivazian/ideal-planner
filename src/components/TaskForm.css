@@ -1,0 +1,28 @@
+.task-form {
+  width: 100%;
+}
+
+.task-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.task-form__checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.task-form__checkbox-wrapper label {
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.task-form__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}

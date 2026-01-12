@@ -1,0 +1,32 @@
+.task-section {
+  margin-bottom: 32px;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 16px;
+  margin-top: 24px;
+}
+
+.task-section:first-child {
+  margin-top: 0;
+}
+
+.task-section__title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #666666;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.task-section__title--overdue {
+  color: #000000;
+  font-weight: 600;
+}
+
+.task-section--overdue {
+  border-top: 2px solid #000000;
+}
+
+.task-section__list {
+  /* список задач */
+}

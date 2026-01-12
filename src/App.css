@@ -1,0 +1,84 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app__nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 12px 24px;
+  background-color: #ffffff;
+  flex-wrap: wrap;
+}
+
+.app__nav-item {
+  padding: 10px 16px;
+  font-size: 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+
+.app__nav-item:hover {
+  opacity: 0.7;
+}
+
+.app__nav-item--active {
+  border-bottom-color: #000000;
+  font-weight: 500;
+}
+
+.app__nav-today {
+  padding: 8px 14px;
+  font-size: 13px;
+  border: 1px solid #000000;
+  background-color: #ffffff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+.app__nav-today:hover {
+  opacity: 0.8;
+  background-color: #f5f5f5;
+}
+
+.app__nav-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.app__nav-arrow {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 6px;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.app__nav-arrow:hover {
+  background-color: #f2f2f2;
+  opacity: 0.85;
+}
+
+.app__main {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.app__calendar-wrapper {
+  max-width: 800px;
+  margin: 32px auto;
+  padding: 0 24px;
+}
