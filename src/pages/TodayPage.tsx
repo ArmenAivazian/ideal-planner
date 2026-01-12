@@ -9,13 +9,11 @@ import './TodayPage.css';
 
 interface TodayPageProps {
   selectedDate?: Date;
-  onDateChange?: (date: Date) => void;
   onTaskChange?: () => void;
 }
 
 export const TodayPage: React.FC<TodayPageProps> = ({
   selectedDate: propSelectedDate,
-  onDateChange,
   onTaskChange,
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(

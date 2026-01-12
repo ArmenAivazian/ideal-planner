@@ -71,10 +71,6 @@ export const App: React.FC = () => {
         {view === 'today' && (
           <TodayPage
             selectedDate={selectedDate}
-            onDateChange={(date) => {
-              setSelectedDate(date);
-              setRefreshTrigger((prev) => prev + 1);
-            }}
             onTaskChange={() => setRefreshTrigger((prev) => prev + 1)}
           />
         )}

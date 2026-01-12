@@ -75,9 +75,6 @@ export class TaskRepository {
       const taskScheduledDate = task.scheduled_date
         ? format(task.scheduled_date, 'yyyy-MM-dd')
         : null;
-      const taskDeadlineDate = task.deadline_date
-        ? format(task.deadline_date, 'yyyy-MM-dd')
-        : null;
       const hasDeadline = !!task.deadline_date;
       
       const scheduledDateOnly = task.scheduled_date
