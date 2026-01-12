@@ -157,6 +157,133 @@ export class TaskRepository {
     };
   }
 
+  // Отримати задачі для діапазону дат (для режиму "Тиждень")
+  async getTasksForRange(
+    startDate: Date,
+    endDate: Date,
+    includeDone: boolean = false
+  ): Promise<{
+    overdue: Task[];
+    scheduled: Task[];
+    deadlines: Task[];
+    backlog: Task[];
+  }> {
+    const allTasks = await this.getAll();
+    const filtered = includeDone
+      ? allTasks
+      : allTasks.filter((t) => !t.is_done);
+
+    const rangeStart = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate()
+    );
+    const rangeEnd = new Date(
+      endDate.getFullYear(),
+      endDate.getMonth(),
+      endDate.getDate()
+    );
+
+    const overdue: Task[] = [];
+    const scheduled: Task[] = [];
+    const deadlines: Task[] = [];
+    const backlog: Task[] = [];
+
+    filtered.forEach((task) => {
+      const hasScheduled = !!task.scheduled_date;
+      const hasDeadline = !!task.deadline_date;
+
+      const scheduledDateOnly = task.scheduled_date
+        ? new Date(
+            task.scheduled_date.getFullYear(),
+            task.scheduled_date.getMonth(),
+            task.scheduled_date.getDate()
+          )
+        : null;
+      const deadlineDateOnly = task.deadline_date
+        ? new Date(
+            task.deadline_date.getFullYear(),
+            task.deadline_date.getMonth(),
+            task.deadline_date.getDate()
+          )
+        : null;
+
+      const isScheduledBefore =
+        scheduledDateOnly && scheduledDateOnly < rangeStart;
+      const isDeadlineBefore =
+        deadlineDateOnly && deadlineDateOnly < rangeStart;
+      const isScheduledInRange =
+        scheduledDateOnly &&
+        scheduledDateOnly >= rangeStart &&
+        scheduledDateOnly <= rangeEnd;
+      const isDeadlineInRange =
+        deadlineDateOnly &&
+        deadlineDateOnly >= rangeStart &&
+        deadlineDateOnly <= rangeEnd;
+      const isDeadlineAfter = deadlineDateOnly && deadlineDateOnly > rangeEnd;
+
+      if (isScheduledBefore || isDeadlineBefore) {
+        overdue.push(task);
+      } else if (isScheduledInRange || isDeadlineInRange) {
+        scheduled.push(task);
+      } else if (hasDeadline && isDeadlineAfter) {
+        deadlines.push(task);
+      } else if (!hasScheduled && !hasDeadline) {
+        backlog.push(task);
+      }
+    });
+
+    overdue.sort((a, b) => {
+      if (a.scheduled_date && b.scheduled_date) {
+        const aScheduled = new Date(
+          a.scheduled_date.getFullYear(),
+          a.scheduled_date.getMonth(),
+          a.scheduled_date.getDate()
+        );
+        const bScheduled = new Date(
+          b.scheduled_date.getFullYear(),
+          b.scheduled_date.getMonth(),
+          b.scheduled_date.getDate()
+        );
+        if (aScheduled < rangeStart && bScheduled < rangeStart) {
+          return aScheduled.getTime() - bScheduled.getTime();
+        }
+      }
+      if (a.deadline_date && b.deadline_date) {
+        const aDeadline = new Date(
+          a.deadline_date.getFullYear(),
+          a.deadline_date.getMonth(),
+          a.deadline_date.getDate()
+        );
+        const bDeadline = new Date(
+          b.deadline_date.getFullYear(),
+          b.deadline_date.getMonth(),
+          b.deadline_date.getDate()
+        );
+        if (aDeadline < rangeStart && bDeadline < rangeStart) {
+          return aDeadline.getTime() - bDeadline.getTime();
+        }
+      }
+      return a.created_at.getTime() - b.created_at.getTime();
+    });
+
+    scheduled.sort((a, b) => a.created_at.getTime() - b.created_at.getTime());
+
+    deadlines.sort((a, b) => {
+      if (!a.deadline_date || !b.deadline_date) return 0;
+      return a.deadline_date.getTime() - b.deadline_date.getTime();
+    });
+
+    backlog.sort((a, b) => a.created_at.getTime() - b.created_at.getTime());
+
+    return {
+      overdue,
+      scheduled,
+      deadlines,
+      backlog,
+    };
+  }
+
   // Отримати задачі для календаря (всі задачі з датами)
   async getTasksForCalendar(): Promise<{
     scheduled: Map<string, number>; // дата -> кількість задач

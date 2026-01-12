@@ -4,17 +4,19 @@ import { taskRepository } from '../db/taskRepository';
 import { TaskSection } from '../components/TaskSection';
 import { TaskForm } from '../components/TaskForm';
 import { Button } from '../components/Button';
-import { format } from 'date-fns';
+import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { uk } from 'date-fns/locale';
 import './TodayPage.css';
 
 interface TodayPageProps {
   selectedDate?: Date;
+  mode: 'day' | 'week';
   onTaskChange?: () => void;
 }
 
 export const TodayPage: React.FC<TodayPageProps> = ({
   selectedDate: propSelectedDate,
+  mode,
   onTaskChange,
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(
@@ -36,6 +38,18 @@ export const TodayPage: React.FC<TodayPageProps> = ({
   const [showForm, setShowForm] = useState(false);
 
   const loadTasks = async () => {
+    if (mode === 'week') {
+      const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
+      const weekEnd = endOfWeek(selectedDate, { weekStartsOn: 1 });
+      const loaded = await taskRepository.getTasksForRange(
+        weekStart,
+        weekEnd,
+        includeDone
+      );
+      setTasks(loaded);
+      return;
+    }
+
     const loaded = await taskRepository.getTasksForDate(
       selectedDate,
       includeDone
@@ -56,7 +70,7 @@ export const TodayPage: React.FC<TodayPageProps> = ({
 
   useEffect(() => {
     loadTasks();
-  }, [selectedDate, includeDone]);
+  }, [selectedDate, includeDone, mode]);
 
   const handleToggle = async (id: string) => {
     const task = await taskRepository.getById(id);
@@ -115,9 +129,21 @@ export const TodayPage: React.FC<TodayPageProps> = ({
   };
 
   const isToday = format(selectedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
-  const displayDate = isToday
-    ? 'Сьогодні'
-    : format(selectedDate, 'd MMMM yyyy', { locale: uk });
+  const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
+  const weekEnd = endOfWeek(selectedDate, { weekStartsOn: 1 });
+  const isSameMonth =
+    weekStart.getFullYear() === weekEnd.getFullYear() &&
+    weekStart.getMonth() === weekEnd.getMonth();
+  const displayDate =
+    mode === 'week'
+      ? isSameMonth
+        ? `${format(weekStart, 'd', { locale: uk })} – ${format(weekEnd, 'd MMMM yyyy', { locale: uk })}`
+        : `${format(weekStart, 'd MMMM yyyy', { locale: uk })} – ${format(weekEnd, 'd MMMM yyyy', { locale: uk })}`
+      : isToday
+        ? 'Сьогодні'
+        : format(selectedDate, 'd MMMM yyyy', { locale: uk });
+  const scheduledTitle =
+    mode === 'week' ? 'Задачі на цей тиждень' : 'Задачі на цей день';
 
   return (
     <div className="today-page">
@@ -166,7 +192,7 @@ export const TodayPage: React.FC<TodayPageProps> = ({
           />
 
           <TaskSection
-            title="Задачі на цей день"
+            title={scheduledTitle}
             tasks={tasks.scheduled}
             onToggle={handleToggle}
             onEdit={handleEdit}

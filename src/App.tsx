@@ -5,7 +5,7 @@ import { Button } from './components/Button';
 import { addDays } from 'date-fns';
 import './App.css';
 
-type View = 'today' | 'calendar';
+type View = 'today' | 'week' | 'calendar';
 
 export const App: React.FC = () => {
   const [view, setView] = useState<View>('today');
@@ -19,12 +19,22 @@ export const App: React.FC = () => {
 
   const handleGoToday = () => {
     setSelectedDate(new Date());
-    setView('today');
+    if (view === 'week') {
+      setView('week');
+      return;
+    }
+    if (view !== 'calendar') {
+      setView('today');
+    }
   };
 
   const handleShiftDay = (direction: -1 | 1) => {
-    setSelectedDate((prev) => addDays(prev, direction));
-    setView('today');
+    const step = view === 'week' ? 7 : 1;
+    setSelectedDate((prev) => addDays(prev, direction * step));
+    if (view === 'calendar') {
+      return;
+    }
+    setView(view === 'week' ? 'week' : 'today');
   };
 
   return (
@@ -36,6 +46,12 @@ export const App: React.FC = () => {
             onClick={() => setView('today')}
           >
             День
+          </button>
+          <button
+            className={`app__nav-item ${view === 'week' ? 'app__nav-item--active' : ''}`}
+            onClick={() => setView('week')}
+          >
+            Тиждень
           </button>
           <button
             className={`app__nav-item ${view === 'calendar' ? 'app__nav-item--active' : ''}`}
@@ -72,9 +88,10 @@ export const App: React.FC = () => {
       </nav>
 
       <main className="app__main">
-        {view === 'today' && (
+        {(view === 'today' || view === 'week') && (
           <TodayPage
             selectedDate={selectedDate}
+            mode={view === 'week' ? 'week' : 'day'}
             onTaskChange={() => setRefreshTrigger((prev) => prev + 1)}
           />
         )}
