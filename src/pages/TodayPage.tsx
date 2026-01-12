@@ -182,38 +182,49 @@ export const TodayPage: React.FC<TodayPageProps> = ({
         </div>
 
         <div className="today-page__content">
-          <TaskSection
-            title="Протерміновані"
-            tasks={tasks.overdue}
-            onToggle={handleToggle}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            isOverdue={true}
-          />
+          {tasks.overdue.length === 0 &&
+          tasks.scheduled.length === 0 &&
+          tasks.deadlines.length === 0 &&
+          tasks.backlog.length === 0 ? (
+            <div className="today-page__empty">
+              Поки що немає задач. Додай першу задачу, щоб почати планування.
+            </div>
+          ) : (
+            <>
+              <TaskSection
+                title="Протерміновані"
+                tasks={tasks.overdue}
+                onToggle={handleToggle}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                isOverdue={true}
+              />
 
-          <TaskSection
-            title={scheduledTitle}
-            tasks={tasks.scheduled}
-            onToggle={handleToggle}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+              <TaskSection
+                title={scheduledTitle}
+                tasks={tasks.scheduled}
+                onToggle={handleToggle}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
 
-          <TaskSection
-            title="Задачі з дедлайном"
-            tasks={tasks.deadlines}
-            onToggle={handleToggle}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+              <TaskSection
+                title="Задачі з дедлайном"
+                tasks={tasks.deadlines}
+                onToggle={handleToggle}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
 
-          <TaskSection
-            title="Всі інші задачі"
-            tasks={tasks.backlog}
-            onToggle={handleToggle}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+              <TaskSection
+                title="Всі інші задачі"
+                tasks={tasks.backlog}
+                onToggle={handleToggle}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>
